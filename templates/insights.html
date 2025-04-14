@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <i class="fas fa-chart-line ml-2"></i> تحليل المصاريف الشهرية
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="monthlyExpensesChart"></canvas>
+                </div>
+                <input type="hidden" id="chart-labels-data" value='{{ chart_labels | safe }}'>
+                <input type="hidden" id="chart-values-data" value='{{ chart_values | safe }}'>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <i class="fas fa-lightbulb ml-2"></i> تحليلات وأفكار
+            </div>
+            <div class="card-body">
+                {% if insights %}
+                {% for insight in insights %}
+                <div class="alert alert-{{ insight.type }}">
+                    <p class="mb-0">{{ insight.message }}</p>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h5>لا توجد تحليلات كافية بعد</h5>
+                    <p>استمر في تسجيل مصاريفك للحصول على تحليلات أكثر دقة</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <i class="fas fa-seedling ml-2"></i> توصيات للتوفير
+            </div>
+            <div class="card-body">
+                <div class="tip-card">
+                    <div class="tip-title">حدد هدفًا للادخار</div>
+                    <div class="tip-message">ضع هدفًا محددًا للادخار كل شهر، مثل 10% من راتبك. سيساعدك ذلك على تطوير عادة الادخار المنتظم.</div>
+                </div>
+                
+                <div class="tip-card">
+                    <div class="tip-title">تتبع المصاريف الصغيرة</div>
+                    <div class="tip-message">المصاريف الصغيرة اليومية مثل القهوة والوجبات السريعة يمكن أن تتراكم. تتبع هذه المصاريف لمعرفة كيف يمكنك التوفير.</div>
+                </div>
+                
+                <div class="tip-card">
+                    <div class="tip-title">استخدم قاعدة 30 يوم</div>
+                    <div class="tip-message">قبل شراء شيء غير ضروري، انتظر 30 يومًا. إذا كنت ما زلت تريده بعد ذلك، فقد يكون شيئًا تحتاجه حقًا.</div>
+                </div>
+                
+                <div class="tip-card">
+                    <div class="tip-title">راجع اشتراكاتك</div>
+                    <div class="tip-message">راجع جميع اشتراكاتك الشهرية (خدمات البث، التطبيقات، الصالات الرياضية) وألغِ ما لا تستخدمه بانتظام.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header">
+                <i class="fas fa-calendar-alt ml-2"></i> نصائح موسمية للتوفير
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-snowflake fa-2x text-info mb-3"></i>
+                                <h5>الشتاء</h5>
+                                <p class="mb-0">اضبط الحرارة قليلاً والبس ملابس دافئة للتوفير في تكاليف التدفئة.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-seedling fa-2x text-success mb-3"></i>
+                                <h5>الربيع</h5>
+                                <p class="mb-0">ابدأ بزراعة بعض الخضروات والأعشاب في المنزل لتوفير تكاليف الطعام.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-sun fa-2x text-warning mb-3"></i>
+                                <h5>الصيف</h5>
+                                <p class="mb-0">استخدم المراوح بدلاً من تكييف الهواء كلما أمكن ذلك لتوفير الطاقة.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-leaf fa-2x text-danger mb-3"></i>
+                                <h5>الخريف</h5>
+                                <p class="mb-0">اشترِ مستلزمات العودة إلى المدرسة في نهاية موسم العودة للمدرسة للحصول على خصومات.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

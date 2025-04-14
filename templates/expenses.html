@@ -1,0 +1,157 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="m-0"><i class="fas fa-list-ul ml-2"></i> سجل المصاريف</h5>
+                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addExpenseModal">
+                    <i class="fas fa-plus ml-1"></i> إضافة مصروف
+                </button>
+            </div>
+            <div class="card-body">
+                {% if expenses %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>الفئة</th>
+                                <th>المبلغ</th>
+                                <th>التاريخ</th>
+                                <th>الوصف</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in expenses %}
+                            <tr>
+                                <td class="expense-category">{{ expense.category }}</td>
+                                <td class="expense-amount">{{ expense.amount }} ريال</td>
+                                <td class="expense-date" data-date="{{ expense.date }}">{{ expense.date }}</td>
+                                <td class="expense-description">{{ expense.description }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info edit-expense-btn" data-id="{{ expense.id }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger delete-expense-btn" data-id="{{ expense.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-receipt fa-4x text-muted mb-3"></i>
+                    <h4>لا توجد مصاريف مسجلة</h4>
+                    <p>ابدأ بإضافة مصروفك الأول!</p>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#addExpenseModal">
+                        <i class="fas fa-plus ml-1"></i> إضافة مصروف
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Expense Modal -->
+<div class="modal fade" id="addExpenseModal" tabindex="-1" role="dialog" aria-labelledby="addExpenseModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addExpenseModalLabel">إضافة مصروف جديد</h5>
+                <button type="button" class="close mr-auto ml-0" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-expense-form">
+                    <div class="form-group">
+                        <label for="category">الفئة</label>
+                        <select class="form-control" id="category" name="category" required>
+                            <option value="">-- اختر الفئة --</option>
+                            {% for category in categories %}
+                            <option value="{{ category.name_en }}">{{ category.name_ar }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">المبلغ</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="amount" name="amount" min="0.01" step="0.01" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">ريال</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">التاريخ</label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">الوصف (اختياري)</label>
+                        <textarea class="form-control" id="description" name="description" rows="2"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">إضافة المصروف</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Expense Modal -->
+<div class="modal fade" id="editExpenseModal" tabindex="-1" role="dialog" aria-labelledby="editExpenseModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editExpenseModalLabel">تعديل المصروف</h5>
+                <button type="button" class="close mr-auto ml-0" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-expense-form">
+                    <input type="hidden" id="edit-expense-id" name="edit-expense-id">
+                    <div class="form-group">
+                        <label for="edit-expense-category">الفئة</label>
+                        <select class="form-control" id="edit-expense-category" name="edit-expense-category" required>
+                            <option value="">-- اختر الفئة --</option>
+                            {% for category in categories %}
+                            <option value="{{ category.name_en }}">{{ category.name_ar }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-expense-amount">المبلغ</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="edit-expense-amount" name="edit-expense-amount" min="0.01" step="0.01" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">ريال</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-expense-date">التاريخ</label>
+                        <input type="date" class="form-control" id="edit-expense-date" name="edit-expense-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-expense-description">الوصف (اختياري)</label>
+                        <textarea class="form-control" id="edit-expense-description" name="edit-expense-description" rows="2"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

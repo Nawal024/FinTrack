@@ -1,0 +1,50 @@
+[
+    {
+        "id": "1",
+        "name_en": "Food",
+        "name_ar": "طعام",
+        "budget": 1000
+    },
+    {
+        "id": "2",
+        "name_en": "Transport",
+        "name_ar": "نقل",
+        "budget": 500
+    },
+    {
+        "id": "3",
+        "name_en": "Shopping",
+        "name_ar": "تسوق",
+        "budget": 800
+    },
+    {
+        "id": "4",
+        "name_en": "Bills",
+        "name_ar": "فواتير",
+        "budget": 1200
+    },
+    {
+        "id": "5",
+        "name_en": "Entertainment",
+        "name_ar": "ترفيه",
+        "budget": 400
+    },
+    {
+        "id": "6",
+        "name_en": "Health",
+        "name_ar": "صحة",
+        "budget": 600
+    },
+    {
+        "id": "7",
+        "name_en": "Education",
+        "name_ar": "تعليم",
+        "budget": 700
+    },
+    {
+        "id": "8",
+        "name_en": "Other",
+        "name_ar": "أخرى",
+        "budget": 300
+    }
+]

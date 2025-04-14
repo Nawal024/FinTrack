@@ -1,0 +1,338 @@
+/* RTL Support */
+body {
+    direction: rtl;
+    text-align: right;
+    font-family: 'Cairo', sans-serif;
+    background-color: #f9f8f6;
+    color: #333;
+}
+
+/* Main color palette */
+:root {
+    --primary: #4ead96;      /* Light green */
+    --secondary: #f7f2e4;    /* Cream */
+    --accent: #c84869;       /* Warm red */
+    --light: #f9f8f6;        /* Soft gray */
+    --dark: #2c363f;         /* Dark gray */
+    --warning: #e6a23c;      /* Amber */
+    --danger: #e15554;       /* Red */
+    --success: #67c23a;      /* Green */
+}
+
+/* Header */
+.navbar {
+    background-color: var(--primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: white !important;
+}
+
+.navbar-nav .nav-link {
+    color: white !important;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--secondary) !important;
+    transform: translateY(-2px);
+}
+
+/* Cards */
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: var(--primary);
+    color: white;
+    font-weight: bold;
+    padding: 15px;
+    border-bottom: none;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #3c9b85;
+    border-color: #3c9b85;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(78, 173, 150, 0.3);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+    font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Forms */
+.form-control {
+    border-radius: 8px;
+    padding: 10px 15px;
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(78, 173, 150, 0.25);
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--dark);
+}
+
+/* Tables */
+.table {
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.table thead th {
+    background-color: var(--primary);
+    color: white;
+    font-weight: bold;
+    border-bottom: none;
+}
+
+.table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: var(--secondary);
+}
+
+/* Alerts */
+.alert {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+
+.alert-warning {
+    background-color: #fff5e5;
+    color: #b88230;
+}
+
+.alert-success {
+    background-color: #f0f9eb;
+    color: #529b2e;
+}
+
+.alert-danger {
+    background-color: #fef0f0;
+    color: #c03639;
+}
+
+.alert-info {
+    background-color: #e6f4ff;
+    color: #1677ff;
+}
+
+/* Budget Progress Bars */
+.progress {
+    height: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    background-color: var(--primary);
+}
+
+.progress-bar-warning {
+    background-color: var(--warning);
+}
+
+.progress-bar-danger {
+    background-color: var(--danger);
+}
+
+/* Dashboard Summaries */
+.summary-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    height: 100%;
+}
+
+.summary-card .icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: var(--primary);
+}
+
+.summary-card .title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--dark);
+}
+
+.summary-card .value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+/* Tips and Insights */
+.tip-card {
+    background-color: var(--secondary);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border-right: 4px solid var(--primary);
+}
+
+.tip-card .tip-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--dark);
+}
+
+.tip-card .tip-message {
+    color: #616161;
+}
+
+/* Animation for alerts and tips */
+@keyframes slideIn {
+    from {
+        transform: translateX(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.alert, .tip-card {
+    animation: slideIn 0.5s ease-out forwards;
+}
+
+/* Chart container */
+.chart-container {
+    height: 300px;
+    margin-bottom: 30px;
+}
+
+/* Date picker custom style */
+.datepicker {
+    border-radius: 8px;
+    padding: 10px 15px;
+    border: 1px solid #ced4da;
+}
+
+/* Category badges */
+.category-badge {
+    background-color: var(--primary);
+    color: white;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Expense item */
+.expense-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    transition: all 0.2s ease;
+}
+
+.expense-item:hover {
+    background-color: #f8f9fa;
+}
+
+.expense-item .expense-amount {
+    font-weight: 700;
+    color: var(--dark);
+}
+
+.expense-item .expense-date {
+    color: #616161;
+    font-size: 13px;
+}
+
+.expense-item .expense-category {
+    display: inline-block;
+    margin-top: 5px;
+}
+
+/* Footer */
+footer {
+    background-color: var(--primary);
+    color: white;
+    padding: 20px 0;
+    margin-top: 50px;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: var(--secondary);
+    text-decoration: none;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 767.98px) {
+    .card-header {
+        padding: 10px 15px;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    .summary-card {
+        padding: 15px;
+    }
+    
+    .summary-card .icon {
+        font-size: 36px;
+    }
+    
+    .summary-card .value {
+        font-size: 22px;
+    }
+}
