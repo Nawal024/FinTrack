@@ -22,5 +22,53 @@
         "date": "2025-04-14",
         "description": "",
         "created_at": "2025-04-14T17:57:31.777629"
+    },
+    {
+        "id": "4",
+        "category": "Shopping",
+        "amount": 70.0,
+        "date": "2025-04-14",
+        "description": "",
+        "created_at": "2025-04-14T23:05:11.186168"
+    },
+    {
+        "id": "5",
+        "category": "Bills",
+        "amount": 900.0,
+        "date": "2025-04-14",
+        "description": "",
+        "created_at": "2025-04-14T23:05:28.747948"
+    },
+    {
+        "id": "6",
+        "category": "Entertainment",
+        "amount": 300.0,
+        "date": "2025-04-14",
+        "description": "",
+        "created_at": "2025-04-14T23:05:46.637652"
+    },
+    {
+        "id": "7",
+        "category": "Health",
+        "amount": 600.0,
+        "date": "2025-04-14",
+        "description": "",
+        "created_at": "2025-04-14T23:06:06.314834"
+    },
+    {
+        "id": "8",
+        "category": "Education",
+        "amount": 500.0,
+        "date": "2025-04-14",
+        "description": "",
+        "created_at": "2025-04-14T23:06:27.480903"
+    },
+    {
+        "id": "9",
+        "category": "Other",
+        "amount": 100.0,
+        "date": "2025-04-14",
+        "description": "",
+        "created_at": "2025-04-14T23:06:44.350554"
     }
 ]

@@ -46,6 +46,8 @@ def index():
     # Get category totals for pie chart with localized category names
     category_totals = {}
     display_category_totals = {}
+    # Dictionary to keep track of English category names for each Arabic category name
+    category_mappings = {}
     
     for expense in monthly_expenses:
         category_en = expense['category']
@@ -62,12 +64,16 @@ def index():
             display_category_totals[category_display] += expense['amount']
         else:
             display_category_totals[category_display] = expense['amount']
+            
+        # Store mapping from Arabic to English
+        category_mappings[category_display] = category_en
     
     return render_template(
         'index.html',
         categories=categories,
         total_spent=total_spent,
         category_totals=json.dumps(display_category_totals),
+        category_names=json.dumps(category_mappings),
         alerts=alerts,
         tips=tips
     )

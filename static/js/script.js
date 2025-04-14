@@ -2,6 +2,149 @@
  * Main JavaScript for Personal Expense Tracker
  */
 
+// Custom plugin for HTML legend in Chart.js
+Chart.plugins.register({
+    id: 'customCategoryIcons',
+    afterRender: function(chart) {
+        // Only for pie charts and only once
+        if (chart.config.type === 'pie' && !chart.customLegendRendered) {
+            // Get the dedicated legend container
+            const legendContainer = document.getElementById('chart-custom-legend');
+            if (!legendContainer) return;
+            
+            // Clear existing content
+            legendContainer.innerHTML = '';
+            
+            // Get category mappings
+            const categoryNamesElement = document.getElementById('category-names-data');
+            if (!categoryNamesElement) return;
+            
+            try {
+                const categoryNames = JSON.parse(categoryNamesElement.value);
+                const datasets = chart.data.datasets[0];
+                const labels = chart.data.labels;
+                const colors = datasets.backgroundColor;
+                
+                // Create legend items
+                for (let i = 0; i < labels.length; i++) {
+                    const category = labels[i];
+                    const color = Array.isArray(colors) ? colors[i] : colors;
+                    const categoryNameEn = categoryNames[category] || '';
+                    const value = datasets.data[i];
+                    
+                    // Get icon for category
+                    let iconClass = 'fas fa-question-circle'; // Default
+                    
+                    if (categoryNameEn === 'Food') {
+                        iconClass = 'fas fa-utensils';
+                    } else if (categoryNameEn === 'Transport') {
+                        iconClass = 'fas fa-car';
+                    } else if (categoryNameEn === 'Shopping') {
+                        iconClass = 'fas fa-shopping-bag';
+                    } else if (categoryNameEn === 'Bills') {
+                        iconClass = 'fas fa-file-invoice-dollar';
+                    } else if (categoryNameEn === 'Entertainment') {
+                        iconClass = 'fas fa-film';
+                    } else if (categoryNameEn === 'Health') {
+                        iconClass = 'fas fa-heartbeat';
+                    } else if (categoryNameEn === 'Education') {
+                        iconClass = 'fas fa-graduation-cap';
+                    } else if (categoryNameEn === 'Other') {
+                        iconClass = 'fas fa-ellipsis-h';
+                    }
+                    
+                    // Create legend item
+                    const legendItem = document.createElement('div');
+                    legendItem.className = 'chart-legend-item';
+                    legendItem.style.display = 'flex';
+                    legendItem.style.alignItems = 'center';
+                    legendItem.style.padding = '8px 5px';
+                    legendItem.style.fontSize = '14px';
+                    legendItem.style.borderRadius = '4px';
+                    legendItem.style.marginBottom = '8px';
+                    legendItem.style.cursor = 'pointer';
+                    
+                    // Add hover effect
+                    legendItem.addEventListener('mouseover', function() {
+                        this.style.backgroundColor = 'rgba(0,0,0,0.05)';
+                    });
+                    legendItem.addEventListener('mouseout', function() {
+                        this.style.backgroundColor = 'transparent';
+                    });
+                    
+                    // Add color box
+                    const colorBox = document.createElement('span');
+                    colorBox.style.backgroundColor = color;
+                    colorBox.style.width = '14px';
+                    colorBox.style.height = '14px';
+                    colorBox.style.display = 'inline-block';
+                    colorBox.style.marginLeft = '8px';
+                    colorBox.style.borderRadius = '2px';
+                    
+                    // Add icon
+                    const icon = document.createElement('i');
+                    icon.className = iconClass;
+                    icon.style.marginLeft = '8px';
+                    icon.style.marginRight = '5px';
+                    icon.style.color = '#333';
+                    icon.style.width = '20px';
+                    icon.style.textAlign = 'center';
+                    
+                    // Add category and value
+                    const labelContainer = document.createElement('div');
+                    labelContainer.style.display = 'flex';
+                    labelContainer.style.flexDirection = 'column';
+                    labelContainer.style.flexGrow = '1';
+                    
+                    const categoryLabel = document.createElement('span');
+                    categoryLabel.textContent = category;
+                    categoryLabel.style.fontWeight = 'bold';
+                    
+                    const valueLabel = document.createElement('span');
+                    valueLabel.textContent = `${parseFloat(value).toFixed(2)} ريال`;
+                    valueLabel.style.fontSize = '12px';
+                    valueLabel.style.color = '#666';
+                    
+                    labelContainer.appendChild(categoryLabel);
+                    labelContainer.appendChild(valueLabel);
+                    
+                    // Assemble
+                    legendItem.appendChild(colorBox);
+                    legendItem.appendChild(icon);
+                    legendItem.appendChild(labelContainer);
+                    legendContainer.appendChild(legendItem);
+                    
+                    // Add click event to highlight corresponding segment
+                    legendItem.addEventListener('click', function() {
+                        const index = i;
+                        const meta = chart.getDatasetMeta(0);
+                        const activeSegment = meta.data[index];
+                        
+                        // Toggle active state
+                        const alreadyActive = activeSegment._model.outerRadius > meta.outerRadius;
+                        
+                        // Reset all segments
+                        meta.data.forEach(function(segment, i) {
+                            segment._model.outerRadius = meta.outerRadius;
+                        });
+                        
+                        // Highlight selected segment if not already active
+                        if (!alreadyActive) {
+                            activeSegment._model.outerRadius = meta.outerRadius * 1.1;
+                        }
+                        
+                        chart.update();
+                    });
+                }
+                
+                chart.customLegendRendered = true;
+            } catch (error) {
+                console.error('Error creating custom legend:', error);
+            }
+        }
+    }
+});
+
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize date pickers
@@ -300,9 +443,12 @@ function initializeCharts() {
     const pieChartCanvas = document.getElementById('categoryPieChart');
     if (pieChartCanvas) {
         const categoryTotalsElement = document.getElementById('category-totals-data');
-        if (categoryTotalsElement) {
+        const categoryNamesElement = document.getElementById('category-names-data');
+        
+        if (categoryTotalsElement && categoryNamesElement) {
             try {
                 const categoryTotals = JSON.parse(categoryTotalsElement.value);
+                const categoryNames = JSON.parse(categoryNamesElement.value);
                 
                 // Extract labels and data from categoryTotals object
                 const labels = Object.keys(categoryTotals);
@@ -327,11 +473,7 @@ function initializeCharts() {
                         responsive: true,
                         maintainAspectRatio: false,
                         legend: {
-                            position: 'right',
-                            rtl: true,
-                            labels: {
-                                fontFamily: 'Cairo, sans-serif'
-                            }
+                            display: false // Hide default legend, we'll use our custom one
                         },
                         tooltips: {
                             enabled: true,

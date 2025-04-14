@@ -291,6 +291,7 @@ dependencies = [
     { name = "gunicorn" },
     { name = "psycopg2-binary" },
     { name = "routes" },
+    { name = "sqlalchemy" },
 ]
 
 [package.metadata]
@@ -302,6 +303,7 @@ requires-dist = [
     { name = "gunicorn", specifier = ">=23.0.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "routes", specifier = ">=2.5.1" },
+    { name = "sqlalchemy", specifier = ">=2.0.40" },
 ]
 
 [[package]]

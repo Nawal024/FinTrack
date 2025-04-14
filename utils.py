@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from models import ExpenseManager, CategoryManager
 
 def initialize_data_files():
-    """Initialize data files if they don't exist"""
+    """Initialize data files if they don't exist (for backward compatibility)"""
     # Create expenses.json if it doesn't exist
     if not os.path.exists('data/expenses.json'):
         with open('data/expenses.json', 'w', encoding='utf-8') as file:
@@ -47,6 +47,76 @@ def initialize_data_files():
         
         with open('data/categories.json', 'w', encoding='utf-8') as file:
             json.dump(default_categories, file, ensure_ascii=False, indent=4)
+
+def create_default_categories_if_empty():
+    """Create default categories in the database if none exist"""
+    # Import here to avoid circular imports
+    from app import db
+    from models import Category
+    
+    # Check if there are any categories in the database
+    try:
+        from app import app
+        with app.app_context():
+            if Category.query.count() == 0:
+                # Define default categories
+                default_categories = [
+                    {
+                        "name_en": "Food",
+                        "name_ar": "طعام",
+                        "budget": 1000
+                    },
+                    {
+                        "name_en": "Transport",
+                        "name_ar": "نقل",
+                        "budget": 500
+                    },
+                    {
+                        "name_en": "Shopping",
+                        "name_ar": "تسوق",
+                        "budget": 800
+                    },
+                    {
+                        "name_en": "Bills",
+                        "name_ar": "فواتير",
+                        "budget": 1200
+                    },
+                    {
+                        "name_en": "Entertainment",
+                        "name_ar": "ترفيه",
+                        "budget": 400
+                    },
+                    {
+                        "name_en": "Health",
+                        "name_ar": "صحة",
+                        "budget": 600
+                    },
+                    {
+                        "name_en": "Education",
+                        "name_ar": "تعليم",
+                        "budget": 700
+                    },
+                    {
+                        "name_en": "Other",
+                        "name_ar": "أخرى",
+                        "budget": 0
+                    }
+                ]
+                
+                # Add categories to database
+                for cat_data in default_categories:
+                    category = Category(
+                        name_en=cat_data["name_en"],
+                        name_ar=cat_data["name_ar"],
+                        budget=cat_data["budget"]
+                    )
+                    db.session.add(category)
+                
+                # Commit to database
+                db.session.commit()
+                print("Default categories created in database")
+    except Exception as e:
+        print(f"Error creating default categories: {str(e)}")
 
 def get_insights():
     """Generate spending insights based on user's expenses"""
