@@ -1,0 +1,14 @@
+I'd like the web application to have a more modern, clean, and visually appealing interface. Please improve the overall UI design, making it more aesthetically pleasing and user-friendly, with better use of space, fonts, colours, and layout.
+In addition, ensure the app is fully responsive and mobile-friendly, adapting seamlessly to different screen sizes. After applying the UI/UX enhancements, please also fix the following functional and layout issues to ensure the app works correctly across all sections:
+
+•	Category Dropdown UI Issue
+The category dropdown (<select>) appears too small, causing the text inside to be clipped or cut off. The dropdown should dynamically adjust its width to accommodate the full length of the Arabic category names without truncation.
+•	Language Switcher Not Functioning
+The language switcher (for toggling between Arabic and English) is currently non-functional. Clicking "English" does not change the app language. Ensure that the switch updates all UI elements and content dynamically to the selected language.
+•	Category Labels Not Localized in UI Components
+Category names in both the expense chart and expense history table are displayed in English (e.g., “Food”) instead of Arabic (“طعام”), even when the category was selected in Arabic during expense entry. These should remain consistent with the original selected language.
+•	Snackbar Text Misaligned
+The snackbar (the notification message that appears after adding or deleting an expense) has misaligned text — the message overlaps with the icon or appears on top of it. Ensure the snackbar layout is properly styled and the text is displayed clearly alongside the icon.
+•	Responsive Design Issue on Mobile
+The app is not fully responsive. On mobile devices, the action icons (edit, delete) in the expense history section stack vertically instead of being displayed side by side like on desktop. The layout should adapt responsively to various screen sizes and maintain proper alignment.
+

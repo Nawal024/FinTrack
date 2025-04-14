@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ session.get('lang', 'ar') }}" dir="{{ 'rtl' if session.get('lang', 'ar') == 'ar' else 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدير المصاريف الشخصية</title>
+    <title>{% if session.get('lang') == 'en' %}Personal Expense Manager{% else %}مدير المصاريف الشخصية{% endif %}</title>
     
-    <!-- Bootstrap RTL -->
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    {% if session.get('lang', 'ar') == 'ar' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-rtl.min.css') }}">
+    {% endif %}
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -26,35 +28,50 @@
     <nav class="navbar navbar-expand-lg navbar-dark mb-4">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <i class="fas fa-wallet ml-2"></i>
-                مدير المصاريف الشخصية
+                <i class="fas fa-wallet {% if session.get('lang', 'ar') == 'ar' %}ml-2{% else %}mr-2{% endif %}"></i>
+                {% if session.get('lang') == 'en' %}Personal Expense Manager{% else %}مدير المصاريف الشخصية{% endif %}
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav {% if session.get('lang', 'ar') == 'ar' %}mr-auto{% else %}ml-auto{% endif %}">
                     <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="fas fa-home ml-1"></i> الرئيسية</a>
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home {% if session.get('lang', 'ar') == 'ar' %}ml-1{% else %}mr-1{% endif %}"></i> 
+                            {% if session.get('lang') == 'en' %}Home{% else %}الرئيسية{% endif %}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/expenses"><i class="fas fa-list-ul ml-1"></i> المصاريف</a>
+                        <a class="nav-link" href="/expenses">
+                            <i class="fas fa-list-ul {% if session.get('lang', 'ar') == 'ar' %}ml-1{% else %}mr-1{% endif %}"></i> 
+                            {% if session.get('lang') == 'en' %}Expenses{% else %}المصاريف{% endif %}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/budget"><i class="fas fa-chart-pie ml-1"></i> الميزانية</a>
+                        <a class="nav-link" href="/budget">
+                            <i class="fas fa-chart-pie {% if session.get('lang', 'ar') == 'ar' %}ml-1{% else %}mr-1{% endif %}"></i> 
+                            {% if session.get('lang') == 'en' %}Budget{% else %}الميزانية{% endif %}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/insights"><i class="fas fa-lightbulb ml-1"></i> التحليلات</a>
+                        <a class="nav-link" href="/insights">
+                            <i class="fas fa-lightbulb {% if session.get('lang', 'ar') == 'ar' %}ml-1{% else %}mr-1{% endif %}"></i> 
+                            {% if session.get('lang') == 'en' %}Insights{% else %}التحليلات{% endif %}
+                        </a>
                     </li>
                 </ul>
                 <!-- Language switcher -->
                 <div class="language-switcher">
-                    <a href="/set_language/ar" class="btn btn-sm btn-outline-light mr-2">العربية</a>
-                    <a href="/set_language/en" class="btn btn-sm btn-outline-light">English</a>
+                    <a href="/set_language/ar" class="btn btn-sm btn-outline-light {% if session.get('lang', 'ar') == 'ar' %}active{% endif %} {% if session.get('lang', 'ar') == 'ar' %}mr-2{% else %}ml-2{% endif %}">العربية</a>
+                    <a href="/set_language/en" class="btn btn-sm btn-outline-light {% if session.get('lang') == 'en' %}active{% endif %}">English</a>
                 </div>
             </div>
         </div>
     </nav>
+
+    <!-- Notification container -->
+    <div id="notification-container"></div>
 
     <!-- Alert container for dynamic alerts -->
     <div id="alert-container" class="container">
@@ -62,6 +79,7 @@
             {% if messages %}
                 {% for category, message in messages %}
                     <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'warning' %}fa-exclamation-triangle{% elif category == 'danger' %}fa-times-circle{% else %}fa-info-circle{% endif %}"></i>
                         {{ message }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -81,7 +99,8 @@
     <footer class="py-3 text-center">
         <div class="container">
             <p class="m-0">
-                <i class="fas fa-code ml-1"></i> مدير المصاريف الشخصية &copy; 2023
+                <i class="fas fa-code {% if session.get('lang', 'ar') == 'ar' %}ml-1{% else %}mr-1{% endif %}"></i> 
+                {% if session.get('lang') == 'en' %}Personal Expense Manager{% else %}مدير المصاريف الشخصية{% endif %} &copy; 2025
             </p>
         </div>
     </footer>
@@ -92,6 +111,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
     
     <!-- Custom Scripts -->
+    <script>
+        // Set current language for JavaScript use
+        const currentLang = "{{ session.get('lang', 'ar') }}";
+        const isRTL = currentLang === 'ar';
+        document.documentElement.setAttribute('lang', currentLang);
+        document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
+    </script>
     <script src="{{ url_for('static', filename='js/chart-config.js') }}"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>

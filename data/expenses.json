@@ -1,1 +1,18 @@
-[]
+[
+    {
+        "id": "1",
+        "category": "Food",
+        "amount": 500.0,
+        "date": "2025-04-14",
+        "description": "",
+        "created_at": "2025-04-14T17:07:52.849389"
+    },
+    {
+        "id": "2",
+        "category": "Transport",
+        "amount": 800.0,
+        "date": "2025-04-14",
+        "description": "نقل مدرسي وتوصيلاات اخرى مختلفة ",
+        "created_at": "2025-04-14T17:15:55.415663"
+    }
+]

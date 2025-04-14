@@ -26,7 +26,7 @@
                         <tbody>
                             {% for expense in expenses %}
                             <tr>
-                                <td class="expense-category">{{ expense.category }}</td>
+                                <td class="expense-category">{{ expense.display_category }}</td>
                                 <td class="expense-amount">{{ expense.amount }} ريال</td>
                                 <td class="expense-date" data-date="{{ expense.date }}">{{ expense.date }}</td>
                                 <td class="expense-description">{{ expense.description }}</td>

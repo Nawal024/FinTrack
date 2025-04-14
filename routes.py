@@ -5,6 +5,18 @@ from utils import get_insights, get_spending_alerts, get_savings_tips
 from datetime import datetime, timedelta
 import json
 
+# Dictionary for category name translations
+category_translations = {
+    'Food': 'طعام',
+    'Transport': 'نقل',
+    'Shopping': 'تسوق',
+    'Bills': 'فواتير',
+    'Entertainment': 'ترفيه',
+    'Health': 'صحة',
+    'Education': 'تعليم',
+    'Other': 'أخرى'
+}
+
 # Set default language (Arabic for this app)
 @app.before_request
 def set_language():
@@ -13,8 +25,16 @@ def set_language():
 
 @app.route('/set_language/<lang>')
 def set_language_route(lang):
-    session['lang'] = lang
+    if lang in ['ar', 'en']:
+        session['lang'] = lang
     return redirect(request.referrer or url_for('index'))
+
+# Helper function to get category display name based on selected language
+def get_category_display_name(category_name_en):
+    if session.get('lang') == 'en':
+        return category_name_en
+    else:
+        return category_translations.get(category_name_en, category_name_en)
 
 @app.route('/')
 def index():
@@ -33,20 +53,31 @@ def index():
     alerts = get_spending_alerts()
     tips = get_savings_tips()
     
-    # Get category totals for pie chart
+    # Get category totals for pie chart with localized category names
     category_totals = {}
+    display_category_totals = {}
+    
     for expense in monthly_expenses:
-        category = expense['category']
-        if category in category_totals:
-            category_totals[category] += expense['amount']
+        category_en = expense['category']
+        
+        # Add to English category totals (for backend operations)
+        if category_en in category_totals:
+            category_totals[category_en] += expense['amount']
         else:
-            category_totals[category] = expense['amount']
+            category_totals[category_en] = expense['amount']
+            
+        # Add to display category totals (for frontend display)
+        category_display = get_category_display_name(category_en)
+        if category_display in display_category_totals:
+            display_category_totals[category_display] += expense['amount']
+        else:
+            display_category_totals[category_display] = expense['amount']
     
     return render_template(
         'index.html',
         categories=categories,
         total_spent=total_spent,
-        category_totals=json.dumps(category_totals),
+        category_totals=json.dumps(display_category_totals),
         alerts=alerts,
         tips=tips
     )
@@ -57,13 +88,18 @@ def expenses():
     all_expenses = ExpenseManager.get_all_expenses()
     all_expenses.sort(key=lambda x: x['date'], reverse=True)
     
+    # Add display category name for each expense
+    for expense in all_expenses:
+        expense['display_category'] = get_category_display_name(expense['category'])
+    
     # Get categories for the form
     categories = CategoryManager.get_all_categories()
     
     return render_template(
         'expenses.html',
         expenses=all_expenses,
-        categories=categories
+        categories=categories,
+        translations=category_translations
     )
 
 @app.route('/budget')
@@ -91,6 +127,10 @@ def budget():
     for category in categories:
         category_id = category['id']
         category_name = category['name_en']
+        
+        # Add display name based on current language
+        category['display_name'] = category['name_ar'] if session.get('lang', 'ar') == 'ar' else category['name_en']
+        
         if category_name in category_spending:
             category['spent'] = category_spending[category_name]
         else:
