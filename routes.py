@@ -113,9 +113,9 @@ def index():
     # Get categories for the form
     categories = CategoryManager.get_all_categories(user_id=user_id)
     
-    # Get spending alerts and savings tips
-    alerts = get_spending_alerts()
-    tips = get_savings_tips()
+    # Get spending alerts and savings tips for this user
+    alerts = get_spending_alerts(user_id=user_id)
+    tips = get_savings_tips(user_id=user_id)
     
     # Get category totals for pie chart with localized category names
     category_totals = {}
@@ -178,16 +178,20 @@ def expenses():
     )
 
 @app.route('/budget')
+@login_required
 def budget():
-    # Get all categories with their budgets
-    categories = CategoryManager.get_all_categories()
+    # Get user ID
+    user_id = current_user.id
+    
+    # Get all categories with their budgets for this user
+    categories = CategoryManager.get_all_categories(user_id=user_id)
     
     # Get current month spending for each category
     today = datetime.now()
     start_of_month = datetime(today.year, today.month, 1).strftime('%Y-%m-%d')
     end_of_month = (datetime(today.year, today.month + 1, 1) - timedelta(days=1)).strftime('%Y-%m-%d')
     
-    monthly_expenses = ExpenseManager.get_expenses_by_date_range(start_of_month, end_of_month)
+    monthly_expenses = ExpenseManager.get_expenses_by_date_range(start_of_month, end_of_month, user_id=user_id)
     
     # Calculate spending per category
     category_spending = {}
@@ -220,12 +224,16 @@ def budget():
     return render_template('budget.html', categories=categories)
 
 @app.route('/insights')
+@login_required
 def insights():
-    # Get insights data
-    insights_data = get_insights()
+    # Get user ID
+    user_id = current_user.id
     
-    # Get monthly expenses for chart
-    monthly_totals = ExpenseManager.get_monthly_totals()
+    # Get insights data for this user
+    insights_data = get_insights(user_id=user_id)
+    
+    # Get monthly expenses for chart for this user
+    monthly_totals = ExpenseManager.get_monthly_totals(user_id=user_id)
     
     # Sort months chronologically
     sorted_months = sorted(monthly_totals.keys())
@@ -243,7 +251,11 @@ def insights():
 
 # API endpoints for AJAX operations
 @app.route('/api/expenses', methods=['POST'])
+@login_required
 def add_expense_api():
+    # Get user ID
+    user_id = current_user.id
+    
     # Get form data
     category = request.form.get('category')
     amount = request.form.get('amount')
@@ -254,13 +266,17 @@ def add_expense_api():
         return jsonify({'success': False, 'message': 'جميع الحقول مطلوبة'}), 400
     
     try:
-        new_expense = ExpenseManager.add_expense(category, amount, date, description)
+        new_expense = ExpenseManager.add_expense(category, amount, date, description, user_id=user_id)
         return jsonify({'success': True, 'expense': new_expense})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
 @app.route('/api/expenses/<expense_id>', methods=['PUT'])
+@login_required
 def update_expense_api(expense_id):
+    # Get user ID
+    user_id = current_user.id
+    
     # Get form data
     data = request.get_json()
     
@@ -273,7 +289,7 @@ def update_expense_api(expense_id):
         return jsonify({'success': False, 'message': 'جميع الحقول مطلوبة'}), 400
     
     try:
-        updated_expense = ExpenseManager.update_expense(expense_id, category, amount, date, description)
+        updated_expense = ExpenseManager.update_expense(expense_id, category, amount, date, description, user_id=user_id)
         if updated_expense:
             return jsonify({'success': True, 'expense': updated_expense})
         else:
@@ -282,9 +298,13 @@ def update_expense_api(expense_id):
         return jsonify({'success': False, 'message': str(e)}), 500
 
 @app.route('/api/expenses/<expense_id>', methods=['DELETE'])
+@login_required
 def delete_expense_api(expense_id):
+    # Get user ID
+    user_id = current_user.id
+    
     try:
-        deleted_expense = ExpenseManager.delete_expense(expense_id)
+        deleted_expense = ExpenseManager.delete_expense(expense_id, user_id=user_id)
         if deleted_expense:
             return jsonify({'success': True})
         else:
@@ -293,7 +313,11 @@ def delete_expense_api(expense_id):
         return jsonify({'success': False, 'message': str(e)}), 500
 
 @app.route('/api/categories', methods=['POST'])
+@login_required
 def add_category_api():
+    # Get user ID
+    user_id = current_user.id
+    
     # Get form data
     name_en = request.form.get('name_en')
     name_ar = request.form.get('name_ar')
@@ -303,13 +327,17 @@ def add_category_api():
         return jsonify({'success': False, 'message': 'اسم الفئة مطلوب'}), 400
     
     try:
-        new_category = CategoryManager.add_category(name_en, name_ar, budget)
+        new_category = CategoryManager.add_category(name_en, name_ar, budget, user_id=user_id)
         return jsonify({'success': True, 'category': new_category})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
 @app.route('/api/categories/<category_id>', methods=['PUT'])
+@login_required
 def update_category_api(category_id):
+    # Get user ID
+    user_id = current_user.id
+    
     # Get form data
     data = request.get_json()
     
@@ -321,7 +349,7 @@ def update_category_api(category_id):
         return jsonify({'success': False, 'message': 'اسم الفئة مطلوب'}), 400
     
     try:
-        updated_category = CategoryManager.update_category(category_id, name_en, name_ar, budget)
+        updated_category = CategoryManager.update_category(category_id, name_en, name_ar, budget, user_id=user_id)
         if updated_category:
             return jsonify({'success': True, 'category': updated_category})
         else:

@@ -147,7 +147,7 @@ def create_default_categories_for_user(user_id):
         logging.error(f"Error creating default categories for user ID {user_id}: {str(e)}")
         return False
 
-def get_insights():
+def get_insights(user_id=None):
     """Generate spending insights based on user's expenses"""
     insights = []
     
@@ -161,9 +161,9 @@ def get_insights():
     start_of_prev_month = first_of_prev_month.strftime('%Y-%m-%d')
     end_of_prev_month = (datetime(today.year, today.month, 1) - timedelta(days=1)).strftime('%Y-%m-%d')
     
-    # Get expenses for current and previous month
-    current_expenses = ExpenseManager.get_expenses_by_date_range(start_of_month, end_of_month)
-    previous_expenses = ExpenseManager.get_expenses_by_date_range(start_of_prev_month, end_of_prev_month)
+    # Get expenses for current and previous month for this user
+    current_expenses = ExpenseManager.get_expenses_by_date_range(start_of_month, end_of_month, user_id=user_id)
+    previous_expenses = ExpenseManager.get_expenses_by_date_range(start_of_prev_month, end_of_prev_month, user_id=user_id)
     
     # Calculate totals
     current_total = sum(expense['amount'] for expense in current_expenses)
@@ -184,7 +184,7 @@ def get_insights():
             })
     
     # Analyze category spending
-    categories = CategoryManager.get_all_categories()
+    categories = CategoryManager.get_all_categories(user_id=user_id)
     for category in categories:
         category_name = category['name_en']
         
@@ -214,7 +214,7 @@ def get_insights():
     
     return insights
 
-def get_spending_alerts():
+def get_spending_alerts(user_id=None):
     """Generate spending alerts based on user's expenses"""
     alerts = []
     
@@ -228,9 +228,9 @@ def get_spending_alerts():
     start_of_prev_month = first_of_prev_month.strftime('%Y-%m-%d')
     end_of_prev_month = (datetime(today.year, today.month, 1) - timedelta(days=1)).strftime('%Y-%m-%d')
     
-    # Get expenses
-    current_month_expenses = ExpenseManager.get_expenses_by_date_range(start_of_month, current_date)
-    previous_month_expenses = ExpenseManager.get_expenses_by_date_range(start_of_prev_month, end_of_prev_month)
+    # Get expenses for this user
+    current_month_expenses = ExpenseManager.get_expenses_by_date_range(start_of_month, current_date, user_id=user_id)
+    previous_month_expenses = ExpenseManager.get_expenses_by_date_range(start_of_prev_month, end_of_prev_month, user_id=user_id)
     
     # Calculate days elapsed in current month
     days_elapsed = (today - datetime(today.year, today.month, 1)).days + 1
@@ -238,7 +238,12 @@ def get_spending_alerts():
     
     # Project monthly total based on current spending rate
     current_month_total = sum(expense['amount'] for expense in current_month_expenses)
-    projected_month_total = (current_month_total / days_elapsed) * days_in_month
+    
+    # Avoid division by zero if it's the first day of month
+    if days_elapsed > 0:
+        projected_month_total = (current_month_total / days_elapsed) * days_in_month
+    else:
+        projected_month_total = current_month_total
     
     previous_month_total = sum(expense['amount'] for expense in previous_month_expenses)
     
@@ -251,7 +256,7 @@ def get_spending_alerts():
         })
     
     # Check for high spending categories
-    categories = CategoryManager.get_all_categories()
+    categories = CategoryManager.get_all_categories(user_id=user_id)
     
     for category in categories:
         category_name = category['name_en']
@@ -266,8 +271,11 @@ def get_spending_alerts():
         current_category_expenses = [e for e in current_month_expenses if e['category'] == category_name]
         current_category_total = sum(expense['amount'] for expense in current_category_expenses)
         
-        # Project category total for the month
-        projected_category_total = (current_category_total / days_elapsed) * days_in_month
+        # Project category total for the month (avoid division by zero)
+        if days_elapsed > 0:
+            projected_category_total = (current_category_total / days_elapsed) * days_in_month
+        else:
+            projected_category_total = current_category_total
         
         # Alert if projected spending is over budget
         if projected_category_total > category_budget:
@@ -279,7 +287,7 @@ def get_spending_alerts():
     
     return alerts
 
-def get_savings_tips():
+def get_savings_tips(user_id=None):
     """Generate savings tips based on user's spending patterns"""
     tips = [
         {
@@ -304,12 +312,12 @@ def get_savings_tips():
         }
     ]
     
-    # Get current month's expenses by category
+    # Get current month's expenses by category for this user
     today = datetime.now()
     start_of_month = datetime(today.year, today.month, 1).strftime('%Y-%m-%d')
     end_of_month = (datetime(today.year, today.month + 1, 1) - timedelta(days=1)).strftime('%Y-%m-%d')
     
-    monthly_expenses = ExpenseManager.get_expenses_by_date_range(start_of_month, end_of_month)
+    monthly_expenses = ExpenseManager.get_expenses_by_date_range(start_of_month, end_of_month, user_id=user_id)
     
     # Calculate spending per category
     category_spending = {}

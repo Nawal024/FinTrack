@@ -1,6 +1,54 @@
 {% extends "layout.html" %}
 
 {% block content %}
+{% if show_welcome %}
+<!-- Welcome page for anonymous users -->
+<div class="jumbotron text-center mt-3">
+    <h1 class="display-4">مرحبًا بك في مدير المصاريف الشخصية</h1>
+    <p class="lead">تطبيق متكامل لإدارة ميزانيتك الشخصية ومتابعة مصاريفك بطريقة سهلة وفعالة</p>
+    <hr class="my-4">
+    <p>قم بتسجيل حساب جديد أو تسجيل الدخول للاستفادة من كافة مميزات التطبيق</p>
+    <p class="lead">
+        <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}" role="button">
+            <i class="fas fa-user-plus ml-2"></i> تسجيل حساب جديد
+        </a>
+        <a class="btn btn-success btn-lg" href="{{ url_for('login') }}" role="button">
+            <i class="fas fa-sign-in-alt ml-2"></i> تسجيل الدخول
+        </a>
+    </p>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4 text-center">
+        <div class="card shadow h-100">
+            <div class="card-body">
+                <i class="fas fa-chart-pie fa-3x text-primary mb-3"></i>
+                <h4>متابعة المصاريف</h4>
+                <p>سجل مصاريفك اليومية وصنفها حسب الفئات لمعرفة أوجه الإنفاق بدقة</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 text-center">
+        <div class="card shadow h-100">
+            <div class="card-body">
+                <i class="fas fa-wallet fa-3x text-success mb-3"></i>
+                <h4>إدارة الميزانية</h4>
+                <p>حدد ميزانية شهرية لكل فئة من فئات الإنفاق وتلقى تنبيهات عند الاقتراب من حدودها</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 text-center">
+        <div class="card shadow h-100">
+            <div class="card-body">
+                <i class="fas fa-lightbulb fa-3x text-warning mb-3"></i>
+                <h4>تحليلات وتوصيات</h4>
+                <p>احصل على تحليلات ذكية لنمط إنفاقك ونصائح للتوفير وتحسين عاداتك المالية</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- Dashboard for authenticated users -->
 <div class="row align-items-start">
     <!-- Left Column: Add Expense & Current Month Summary -->
     <div class="col-lg-4">
@@ -129,4 +177,5 @@
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}
