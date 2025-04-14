@@ -85,20 +85,14 @@ body {
 
 /* Container & Row adjustments */
 .container {
-    max-width: 100%;
+    max-width: 95%;
     padding-right: 1rem;
     padding-left: 1rem;
 }
 
-@media (min-width: 576px) {
-    .container {
-        max-width: 95%;
-    }
-}
-
 @media (min-width: 992px) {
     .container {
-        max-width: 95%;
+        max-width: 90%;
     }
 }
 
@@ -109,13 +103,13 @@ body {
 }
 
 .row {
-    margin-right: -0.5rem;
-    margin-left: -0.5rem;
+    margin-right: -0.75rem;
+    margin-left: -0.75rem;
 }
 
 .row > [class*="col-"] {
-    padding-right: 0.5rem;
-    padding-left: 0.5rem;
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
 }
 
 /* Cards */
