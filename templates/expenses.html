@@ -44,10 +44,10 @@
                                 <td class="expense-description">{{ expense.description }}</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn btn-sm btn-info edit-expense-btn" data-id="{{ expense.id }}" title="{% if session.get('lang') == 'en' %}Edit{% else %}تعديل{% endif %}">
+                                        <button class="btn btn-sm btn-info edit-expense-btn" data-id="{{ expense.id }}" title="تعديل">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-danger delete-expense-btn" data-id="{{ expense.id }}" title="{% if session.get('lang') == 'en' %}Delete{% else %}حذف{% endif %}">
+                                        <button class="btn btn-sm btn-danger delete-expense-btn" data-id="{{ expense.id }}" title="حذف">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>

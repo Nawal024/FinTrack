@@ -16,7 +16,19 @@
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="card category-card" data-name-en="{{ category.name_en }}" data-name-ar="{{ category.name_ar }}">
                             <div class="card-body">
-                                <h5 class="card-title text-center mb-3">{{ category.display_name }}</h5>
+                                <h5 class="card-title text-center mb-3">
+                                    <span class="category-icon category-{{ category.name_en | lower }}">
+                                        {% if category.name_en == 'Food' %}<i class="fas fa-utensils"></i>
+                                        {% elif category.name_en == 'Transport' %}<i class="fas fa-car"></i>
+                                        {% elif category.name_en == 'Shopping' %}<i class="fas fa-shopping-bag"></i>
+                                        {% elif category.name_en == 'Bills' %}<i class="fas fa-file-invoice-dollar"></i>
+                                        {% elif category.name_en == 'Entertainment' %}<i class="fas fa-film"></i>
+                                        {% elif category.name_en == 'Health' %}<i class="fas fa-heartbeat"></i>
+                                        {% elif category.name_en == 'Education' %}<i class="fas fa-graduation-cap"></i>
+                                        {% else %}<i class="fas fa-receipt"></i>{% endif %}
+                                    </span>
+                                    {{ category.display_name }}
+                                </h5>
                                 
                                 <!-- Budget progress bar -->
                                 <div class="mb-2 d-flex justify-content-between">
@@ -50,14 +62,14 @@
                                 
                                 <!-- Budget edit form -->
                                 <form class="category-budget-form" data-category-id="{{ category.id }}">
-                                    <div class="input-group">
-                                        <input type="number" class="form-control budget-input" value="{{ category.budget }}" min="0" step="0.01" required>
-                                        <div class="input-group-append">
+                                    <div class="d-flex">
+                                        <div class="currency-input flex-grow-1 ml-2">
+                                            <input type="number" class="form-control budget-input" value="{{ category.budget }}" min="0" step="0.01" required>
                                             <span class="input-group-text">ريال</span>
-                                            <button class="btn btn-outline-primary" type="submit">
-                                                <i class="fas fa-save"></i>
-                                            </button>
                                         </div>
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fas fa-save"></i>
+                                        </button>
                                     </div>
                                 </form>
                             </div>

@@ -17,24 +17,14 @@ category_translations = {
     'Other': 'أخرى'
 }
 
-# Set default language (Arabic for this app)
+# Set Arabic as the only language
 @app.before_request
 def set_language():
-    if 'lang' not in session:
-        session['lang'] = 'ar'  # Default to Arabic
+    session['lang'] = 'ar'  # Always use Arabic
 
-@app.route('/set_language/<lang>')
-def set_language_route(lang):
-    if lang in ['ar', 'en']:
-        session['lang'] = lang
-    return redirect(request.referrer or url_for('index'))
-
-# Helper function to get category display name based on selected language
+# Helper function to get category display name in Arabic
 def get_category_display_name(category_name_en):
-    if session.get('lang') == 'en':
-        return category_name_en
-    else:
-        return category_translations.get(category_name_en, category_name_en)
+    return category_translations.get(category_name_en, category_name_en)
 
 @app.route('/')
 def index():
@@ -128,8 +118,8 @@ def budget():
         category_id = category['id']
         category_name = category['name_en']
         
-        # Add display name based on current language
-        category['display_name'] = category['name_ar'] if session.get('lang', 'ar') == 'ar' else category['name_en']
+        # Always use Arabic display name
+        category['display_name'] = category['name_ar']
         
         if category_name in category_spending:
             category['spent'] = category_spending[category_name]
