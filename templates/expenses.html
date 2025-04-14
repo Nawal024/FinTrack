@@ -31,12 +31,14 @@
                                 <td class="expense-date" data-date="{{ expense.date }}">{{ expense.date }}</td>
                                 <td class="expense-description">{{ expense.description }}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-info edit-expense-btn" data-id="{{ expense.id }}">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger delete-expense-btn" data-id="{{ expense.id }}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-info edit-expense-btn" data-id="{{ expense.id }}" title="{% if session.get('lang') == 'en' %}Edit{% else %}تعديل{% endif %}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger delete-expense-btn" data-id="{{ expense.id }}" title="{% if session.get('lang') == 'en' %}Delete{% else %}حذف{% endif %}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}

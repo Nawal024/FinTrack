@@ -12,6 +12,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize any charts on the page
     initializeCharts();
+    
+    // Fix dropdown width issues and mobile layout
+    fixSelectWidthIssues();
+    
+    // Create notification container if it doesn't exist
+    if (!document.getElementById('notification-container')) {
+        const notificationContainer = document.createElement('div');
+        notificationContainer.id = 'notification-container';
+        document.body.appendChild(notificationContainer);
+    }
 });
 
 /**
@@ -436,31 +446,106 @@ function generateRandomColors(count) {
  * @param {string} type - Alert type (success, danger, warning, info)
  */
 function showAlert(message, type) {
-    // Create alert element
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-    alertDiv.role = 'alert';
+    // Create notification element
+    const notificationDiv = document.createElement('div');
+    notificationDiv.className = `notification notification-${type}`;
     
-    alertDiv.innerHTML = `
-        ${message}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+    // Determine icon based on type
+    let icon = 'info-circle';
+    if (type === 'success') {
+        icon = 'check-circle';
+    } else if (type === 'warning') {
+        icon = 'exclamation-triangle';
+    } else if (type === 'danger' || type === 'error') {
+        icon = 'times-circle';
+        type = 'error'; // Normalize type
+    }
+    
+    notificationDiv.innerHTML = `
+        <div class="notification-icon">
+            <i class="fas fa-${icon}"></i>
+        </div>
+        <div class="notification-message">${message}</div>
+        <button type="button" class="notification-close" aria-label="Close">
+            <i class="fas fa-times"></i>
         </button>
     `;
     
-    // Add alert to container
-    const alertContainer = document.getElementById('alert-container');
-    if (alertContainer) {
-        alertContainer.appendChild(alertDiv);
+    // Add notification to container
+    const notificationContainer = document.getElementById('notification-container');
+    if (notificationContainer) {
+        // Add to DOM
+        notificationContainer.appendChild(notificationDiv);
+        
+        // Add click listener to close button
+        const closeButton = notificationDiv.querySelector('.notification-close');
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                notificationDiv.remove();
+            });
+        }
         
         // Auto-remove after 5 seconds
         setTimeout(() => {
-            alertDiv.classList.remove('show');
+            notificationDiv.style.opacity = '0';
             setTimeout(() => {
-                alertDiv.remove();
-            }, 150);
+                notificationDiv.remove();
+            }, 300);
         }, 5000);
     }
+}
+
+/**
+ * Fix the width and display issues for select dropdowns
+ */
+function fixSelectWidthIssues() {
+    // Fix all select elements
+    const selects = document.querySelectorAll('select.form-control');
+    
+    selects.forEach(select => {
+        // Ensure the select can expand as needed
+        select.style.overflow = 'hidden';
+        select.style.textOverflow = 'ellipsis';
+        select.style.maxWidth = '100%';
+        
+        // Add change event to ensure selected option is visible
+        select.addEventListener('change', function() {
+            // Force a repaint to ensure the selected option is fully visible
+            this.style.width = '100%';
+        });
+    });
+    
+    // Fix mobile view for action buttons
+    fixMobileResponsiveLayout();
+}
+
+/**
+ * Fix mobile responsive layout issues
+ */
+function fixMobileResponsiveLayout() {
+    // Check if we're on a mobile device (less than 768px)
+    const isMobile = window.innerWidth < 768;
+    
+    // Fix action buttons on mobile
+    const actionButtonsContainers = document.querySelectorAll('.action-buttons');
+    if (isMobile) {
+        actionButtonsContainers.forEach(container => {
+            container.style.display = 'flex';
+            container.style.flexDirection = 'row';
+            container.style.gap = '0.5rem';
+            container.style.justifyContent = 'flex-end';
+        });
+    } else {
+        actionButtonsContainers.forEach(container => {
+            container.style.display = 'flex';
+            container.style.gap = '0.5rem';
+        });
+    }
+    
+    // Add resize listener to update mobile layout
+    window.addEventListener('resize', function() {
+        fixMobileResponsiveLayout();
+    });
 }
 
 // Register event listener for edit expense form
