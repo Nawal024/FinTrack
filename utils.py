@@ -52,13 +52,27 @@ def create_default_categories_if_empty():
     """Create default categories in the database if none exist"""
     # Import here to avoid circular imports
     from app import db
-    from models import Category
+    from models import Category, User
     
     # Check if there are any categories in the database
     try:
         from app import app
         with app.app_context():
-            if Category.query.count() == 0:
+            # Get or create default user
+            default_user = User.query.filter_by(username='default_user').first()
+            if not default_user:
+                from werkzeug.security import generate_password_hash
+                default_user = User(
+                    username='default_user',
+                    email='default@example.com',
+                    password_hash=generate_password_hash('default_password')
+                )
+                db.session.add(default_user)
+                db.session.commit()
+                print("Created default user for categories")
+                
+            # Check if user has any categories
+            if Category.query.filter_by(user_id=default_user.id).count() == 0:
                 # Define default categories
                 default_categories = [
                     {
@@ -108,13 +122,14 @@ def create_default_categories_if_empty():
                     category = Category(
                         name_en=cat_data["name_en"],
                         name_ar=cat_data["name_ar"],
-                        budget=cat_data["budget"]
+                        budget=cat_data["budget"],
+                        user_id=default_user.id
                     )
                     db.session.add(category)
                 
                 # Commit to database
                 db.session.commit()
-                print("Default categories created in database")
+                print(f"Default categories created for user {default_user.username}")
     except Exception as e:
         print(f"Error creating default categories: {str(e)}")
 

@@ -1,8 +1,9 @@
 import os
 import logging
-from flask import Flask
+from flask import Flask, session, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)
@@ -27,6 +28,18 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 
 # Initialize the app with the extension
 db.init_app(app)
+
+# Initialize login manager
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+login_manager.login_message = 'يرجى تسجيل الدخول للوصول إلى هذه الصفحة'
+login_manager.login_message_category = 'info'
+
+@login_manager.user_loader
+def load_user(user_id):
+    from models import User
+    return User.query.get(int(user_id))
 
 # Ensure the data directory exists (for backward compatibility)
 if not os.path.exists('data'):
