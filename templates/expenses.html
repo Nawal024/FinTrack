@@ -26,7 +26,19 @@
                         <tbody>
                             {% for expense in expenses %}
                             <tr>
-                                <td class="expense-category">{{ expense.display_category }}</td>
+                                <td class="expense-category">
+                                    <span class="category-icon category-{{ expense.category | lower }}">
+                                        {% if expense.category == 'Food' %}<i class="fas fa-utensils"></i>
+                                        {% elif expense.category == 'Transport' %}<i class="fas fa-car"></i>
+                                        {% elif expense.category == 'Shopping' %}<i class="fas fa-shopping-bag"></i>
+                                        {% elif expense.category == 'Bills' %}<i class="fas fa-file-invoice-dollar"></i>
+                                        {% elif expense.category == 'Entertainment' %}<i class="fas fa-film"></i>
+                                        {% elif expense.category == 'Health' %}<i class="fas fa-heartbeat"></i>
+                                        {% elif expense.category == 'Education' %}<i class="fas fa-graduation-cap"></i>
+                                        {% else %}<i class="fas fa-receipt"></i>{% endif %}
+                                    </span>
+                                    {{ expense.display_category }}
+                                </td>
                                 <td class="expense-amount">{{ expense.amount }} ريال</td>
                                 <td class="expense-date" data-date="{{ expense.date }}">{{ expense.date }}</td>
                                 <td class="expense-description">{{ expense.description }}</td>
@@ -83,11 +95,9 @@
                     </div>
                     <div class="form-group">
                         <label for="amount">المبلغ</label>
-                        <div class="input-group">
+                        <div class="currency-input">
                             <input type="number" class="form-control" id="amount" name="amount" min="0.01" step="0.01" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text">ريال</span>
-                            </div>
+                            <span class="input-group-text">ريال</span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -132,11 +142,9 @@
                     </div>
                     <div class="form-group">
                         <label for="edit-expense-amount">المبلغ</label>
-                        <div class="input-group">
+                        <div class="currency-input">
                             <input type="number" class="form-control" id="edit-expense-amount" name="edit-expense-amount" min="0.01" step="0.01" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text">ريال</span>
-                            </div>
+                            <span class="input-group-text">ريال</span>
                         </div>
                     </div>
                     <div class="form-group">
