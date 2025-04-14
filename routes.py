@@ -1,9 +1,11 @@
 from flask import render_template, request, redirect, url_for, jsonify, flash, session
-from app import app
-from models import ExpenseManager, CategoryManager
+from app import app, db
+from models import ExpenseManager, CategoryManager, User
 from utils import get_insights, get_spending_alerts, get_savings_tips
 from datetime import datetime, timedelta
 import json
+from forms import LoginForm, RegistrationForm
+from flask_login import login_user, logout_user, current_user, login_required
 
 # Dictionary for category name translations
 category_translations = {
@@ -22,22 +24,94 @@ category_translations = {
 def set_language():
     session['lang'] = 'ar'  # Always use Arabic
 
+# Authentication routes
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    # Redirect if user is already logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+        
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        
+        if user is None or not user.check_password(form.password.data):
+            flash('اسم المستخدم أو كلمة المرور غير صحيحة', 'danger')
+            return redirect(url_for('login'))
+            
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        
+        if not next_page or not next_page.startswith('/'):
+            next_page = url_for('index')
+            
+        flash('تم تسجيل الدخول بنجاح', 'success')
+        return redirect(next_page)
+        
+    return render_template('login.html', form=form)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    # Redirect if user is already logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+        
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User()
+        user.username = form.username.data
+        user.email = form.email.data
+        user.set_password(form.password.data)
+        
+        db.session.add(user)
+        db.session.commit()
+        
+        # Create default categories for new user
+        from utils import create_default_categories_for_user
+        create_default_categories_for_user(user.id)
+        
+        flash('تم تسجيل الحساب بنجاح! يمكنك الآن تسجيل الدخول', 'success')
+        return redirect(url_for('login'))
+        
+    return render_template('register.html', form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    flash('تم تسجيل الخروج بنجاح', 'info')
+    return redirect(url_for('index'))
+
 # Helper function to get category display name in Arabic
 def get_category_display_name(category_name_en):
     return category_translations.get(category_name_en, category_name_en)
 
 @app.route('/')
 def index():
+    # Check if user is not authenticated
+    if not current_user.is_authenticated:
+        # Show welcome page for anonymous users
+        return render_template('index.html', 
+                              categories=[], 
+                              total_spent=0, 
+                              category_totals=json.dumps({}),
+                              category_names=json.dumps({}),
+                              alerts=[],
+                              tips=[],
+                              show_welcome=True)
+    
+    # User is authenticated, get data for current user
+    user_id = current_user.id
+    
     # Get current month's expenses
     today = datetime.now()
     start_of_month = datetime(today.year, today.month, 1).strftime('%Y-%m-%d')
     end_of_month = (datetime(today.year, today.month + 1, 1) - timedelta(days=1)).strftime('%Y-%m-%d')
     
-    monthly_expenses = ExpenseManager.get_expenses_by_date_range(start_of_month, end_of_month)
+    monthly_expenses = ExpenseManager.get_expenses_by_date_range(start_of_month, end_of_month, user_id=user_id)
     total_spent = sum(expense['amount'] for expense in monthly_expenses)
     
     # Get categories for the form
-    categories = CategoryManager.get_all_categories()
+    categories = CategoryManager.get_all_categories(user_id=user_id)
     
     # Get spending alerts and savings tips
     alerts = get_spending_alerts()
@@ -75,13 +149,18 @@ def index():
         category_totals=json.dumps(display_category_totals),
         category_names=json.dumps(category_mappings),
         alerts=alerts,
-        tips=tips
+        tips=tips,
+        show_welcome=False
     )
 
 @app.route('/expenses')
+@login_required
 def expenses():
-    # Get all expenses, sorted by date (newest first)
-    all_expenses = ExpenseManager.get_all_expenses()
+    # Get user ID
+    user_id = current_user.id
+    
+    # Get all expenses for this user, sorted by date (newest first)
+    all_expenses = ExpenseManager.get_all_expenses(user_id=user_id)
     all_expenses.sort(key=lambda x: x['date'], reverse=True)
     
     # Add display category name for each expense
@@ -89,7 +168,7 @@ def expenses():
         expense['display_category'] = get_category_display_name(expense['category'])
     
     # Get categories for the form
-    categories = CategoryManager.get_all_categories()
+    categories = CategoryManager.get_all_categories(user_id=user_id)
     
     return render_template(
         'expenses.html',

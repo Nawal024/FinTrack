@@ -69,69 +69,83 @@ def create_default_categories_if_empty():
                 )
                 db.session.add(default_user)
                 db.session.commit()
-                print("Created default user for categories")
+                print("Created default user for data migration")
                 
             # Check if user has any categories
             if Category.query.filter_by(user_id=default_user.id).count() == 0:
-                # Define default categories
-                default_categories = [
-                    {
-                        "name_en": "Food",
-                        "name_ar": "طعام",
-                        "budget": 1000
-                    },
-                    {
-                        "name_en": "Transport",
-                        "name_ar": "نقل",
-                        "budget": 500
-                    },
-                    {
-                        "name_en": "Shopping",
-                        "name_ar": "تسوق",
-                        "budget": 800
-                    },
-                    {
-                        "name_en": "Bills",
-                        "name_ar": "فواتير",
-                        "budget": 1200
-                    },
-                    {
-                        "name_en": "Entertainment",
-                        "name_ar": "ترفيه",
-                        "budget": 400
-                    },
-                    {
-                        "name_en": "Health",
-                        "name_ar": "صحة",
-                        "budget": 600
-                    },
-                    {
-                        "name_en": "Education",
-                        "name_ar": "تعليم",
-                        "budget": 700
-                    },
-                    {
-                        "name_en": "Other",
-                        "name_ar": "أخرى",
-                        "budget": 0
-                    }
-                ]
-                
-                # Add categories to database
-                for cat_data in default_categories:
-                    category = Category(
-                        name_en=cat_data["name_en"],
-                        name_ar=cat_data["name_ar"],
-                        budget=cat_data["budget"],
-                        user_id=default_user.id
-                    )
-                    db.session.add(category)
-                
-                # Commit to database
-                db.session.commit()
+                create_default_categories_for_user(default_user.id)
                 print(f"Default categories created for user {default_user.username}")
     except Exception as e:
         print(f"Error creating default categories: {str(e)}")
+
+def create_default_categories_for_user(user_id):
+    """Create default expense categories for a specific user"""
+    # Import here to avoid circular imports
+    from app import db
+    from models import Category
+    
+    try:
+        # Define default categories
+        default_categories = [
+            {
+                "name_en": "Food",
+                "name_ar": "طعام",
+                "budget": 1000
+            },
+            {
+                "name_en": "Transport",
+                "name_ar": "نقل",
+                "budget": 500
+            },
+            {
+                "name_en": "Shopping",
+                "name_ar": "تسوق",
+                "budget": 800
+            },
+            {
+                "name_en": "Bills",
+                "name_ar": "فواتير",
+                "budget": 1200
+            },
+            {
+                "name_en": "Entertainment",
+                "name_ar": "ترفيه",
+                "budget": 400
+            },
+            {
+                "name_en": "Health",
+                "name_ar": "صحة",
+                "budget": 600
+            },
+            {
+                "name_en": "Education",
+                "name_ar": "تعليم",
+                "budget": 700
+            },
+            {
+                "name_en": "Other",
+                "name_ar": "أخرى",
+                "budget": 0
+            }
+        ]
+        
+        # Add categories to database
+        for cat_data in default_categories:
+            category = Category(
+                name_en=cat_data["name_en"],
+                name_ar=cat_data["name_ar"],
+                budget=cat_data["budget"],
+                user_id=user_id
+            )
+            db.session.add(category)
+        
+        # Commit to database
+        db.session.commit()
+        return True
+    except Exception as e:
+        import logging
+        logging.error(f"Error creating default categories for user ID {user_id}: {str(e)}")
+        return False
 
 def get_insights():
     """Generate spending insights based on user's expenses"""
