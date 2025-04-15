@@ -43,7 +43,7 @@ class User(UserMixin, db.Model):
 class Expense(db.Model):
     __tablename__ = 'expenses'
     
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     category = db.Column(db.String(100), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     date = db.Column(db.Date, nullable=False)
@@ -101,10 +101,13 @@ class ExpenseManager:
     def add_expense(category, amount, date, description="", user_id=None):
         """Add a new expense to the database"""
         try:
-            # Convert date string to date object
-            date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+            # Convert date string to date object if it's a string
+            if isinstance(date, str):
+                date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+            else:
+                date_obj = date
             
-            # Create new expense
+            # Create new expense without specifying ID (let it auto-increment)
             new_expense = Expense(
                 category=category,
                 amount=float(amount),
@@ -114,8 +117,11 @@ class ExpenseManager:
                 user_id=user_id
             )
             
-            # Add to database
+            # Add and flush to get the ID
             db.session.add(new_expense)
+            db.session.flush()
+            
+            # Now commit the transaction
             db.session.commit()
             
             return new_expense.to_dict()
