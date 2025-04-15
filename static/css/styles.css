@@ -7,9 +7,21 @@ body {
     direction: rtl;
     text-align: right;
     font-family: 'Cairo', sans-serif;
-      background: linear-gradient(to right, #3d9788, #f8f4eb);
+    background: linear-gradient(to right, #3d9788, #f8f4eb);
     color: #333;
     line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+footer {
+    flex-shrink: 0;
 }
 
 /* Main color palette */
@@ -717,12 +729,8 @@ footer {
     background-color: var(--primary);
     color: white;
     padding: 2rem 0;
-    margin-top: auto;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+    margin-top: 3rem;
 }
-
 
 footer a {
     color: rgba(255, 255, 255, 0.8);
