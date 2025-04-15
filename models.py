@@ -288,7 +288,7 @@ class CategoryManager:
         """Retrieve all expense categories from the database"""
         try:
             if user_id:
-                categories = Category.query.filter_by(user_id=user_id).all()
+                categories = Category.query.all()
             else:
                 categories = Category.query.all()
             return [category.to_dict() for category in categories]
