@@ -435,7 +435,6 @@ def migrate_data_from_json_to_db():
                         created_at = datetime.fromisoformat(expense_data['created_at']) if 'created_at' in expense_data else datetime.now()
                         
                         new_expense = Expense(
-                            id=int(expense_data['id']),
                             category=expense_data['category'],
                             amount=float(expense_data['amount']),
                             date=date_obj,

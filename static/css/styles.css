@@ -741,6 +741,8 @@ footer a:hover {
     opacity: 0.8;
     text-shadow: none;
     transition: all 0.2s ease;
+    position: absolute; 
+    left: 0; /* تحديد الأيقونة في أقصى اليسار */
 }
 
 .modal-header .close:hover {
