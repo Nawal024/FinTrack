@@ -1,9 +1,6 @@
 from flask import render_template, request, redirect, url_for, jsonify, flash, session
 from app import app, db
 from models import ExpenseManager, CategoryManager, User
-from google_auth_oauthlib.flow import Flow
-import requests
-import os
 from utils import get_insights, get_spending_alerts, get_savings_tips
 from datetime import datetime, timedelta
 import json
