@@ -524,6 +524,10 @@ select.form-control {
     cursor: pointer;
     padding: 0;
     margin-right: 0.5rem;
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+    margin-top: 2px;
 }
 
 /* Budget Progress Bars */
@@ -967,4 +971,25 @@ html[lang="en"] {
 
 .notification-warning .notification-icon {
     color: var(--warning);
+}
+
+.notification {
+    display: flex;
+    justify-content: space-between; /* Align items to opposite ends */
+    align-items: center;
+}
+
+.notification-close {
+    color: white;
+    background: transparent;
+    border: none;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 0.5rem; /* Moved margin to left for RTL */
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+    margin-top: 2px;
 }
