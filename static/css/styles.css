@@ -425,6 +425,7 @@ select.form-control {
     display: flex;
     align-items: center;
     position: relative;
+    transition: opacity 0.3s ease-out;
 }
 
 .alert-dismissible .close {
@@ -438,6 +439,7 @@ select.form-control {
 .alert i {
     margin-left: 0.75rem;
     font-size: 1.1rem;
+    order: -1; /* Move icon to start in RTL layout */
 }
 
 .alert-warning {
@@ -768,19 +770,19 @@ footer a:hover {
         padding-right: 15px;
         padding-left: 15px;
     }
-    
+
     .navbar-brand {
         font-size: 1.1rem;
     }
-    
+
     .language-switcher {
         margin-top: 0.5rem;
     }
-    
+
     .card-header {
         padding: 0.75rem 1rem;
     }
-    
+
     .card-body {
         padding: 1.25rem;
     }
@@ -790,62 +792,62 @@ footer a:hover {
     body {
         font-size: 0.95rem;
     }
-    
+
     .navbar {
         padding: 0.5rem 1rem;
     }
-    
+
     .navbar-nav {
         margin-top: 0.5rem;
     }
-    
+
     .navbar-nav .nav-link {
         padding: 0.5rem 0;
     }
-    
+
     .card-header {
         padding: 0.75rem 1rem;
     }
-    
+
     .card-body {
         padding: 1rem;
     }
-    
+
     .summary-card {
         padding: 1rem;
     }
-    
+
     .summary-card .icon {
         font-size: 2rem;
     }
-    
+
     .summary-card .value {
         font-size: 1.5rem;
     }
-    
+
     .table td, .table th {
         padding: 0.75rem;
     }
-    
+
     .action-buttons {
         flex-direction: row;
         justify-content: flex-end;
         margin-top: 0;
     }
-    
+
     .action-buttons .btn {
         margin-bottom: 0;
         margin-left: 0.5rem;
     }
-    
+
     .chart-container {
         height: 300px;
     }
-    
+
     .tip-card {
         padding: 1rem;
     }
-    
+
     .modal-header, .modal-body, .modal-footer {
         padding: 1rem;
     }
@@ -855,39 +857,39 @@ footer a:hover {
     .card-header {
         padding: 0.75rem;
     }
-    
+
     .card-body {
         padding: 0.75rem;
     }
-    
+
     .summary-card .icon {
         font-size: 1.75rem;
     }
-    
+
     .summary-card .value {
         font-size: 1.25rem;
     }
-    
+
     .chart-container {
         height: 250px;
     }
-    
+
     .table-responsive {
         margin-bottom: 0;
     }
-    
+
     .tip-card {
         padding: 0.75rem;
     }
-    
+
     .form-group {
         margin-bottom: 1rem;
     }
-    
+
     .form-control {
         padding: 0.6rem 0.75rem;
     }
-    
+
     .btn {
         padding: 0.4rem 1rem;
     }

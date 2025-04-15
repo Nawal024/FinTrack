@@ -145,10 +145,23 @@ Chart.plugins.register({
     }
 });
 
+// Auto-dismiss flash messages
+function setupFlashMessages() {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 300);
+        }, 5000);
+    });
+}
+
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize date pickers
     initializeDatePickers();
+    // Setup flash message auto-dismiss
+    setupFlashMessages();
     
     // Setup event listeners
     setupEventListeners();
