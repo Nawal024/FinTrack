@@ -84,6 +84,11 @@ def create_default_categories_for_user(user_id):
     from app import db
     from models import Category
     
+    # First check if user already has categories
+    existing_categories = Category.query.filter_by(user_id=user_id).first()
+    if existing_categories:
+        return True
+        
     try:
         # Define default categories
         default_categories = [
