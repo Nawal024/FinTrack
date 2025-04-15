@@ -1,9 +1,6 @@
 from flask import render_template, request, redirect, url_for, jsonify, flash, session
 from app import app, db
 from models import ExpenseManager, CategoryManager, User
-from google_auth_oauthlib.flow import Flow
-import requests
-import os
 from utils import get_insights, get_spending_alerts, get_savings_tips
 from datetime import datetime, timedelta
 import json
@@ -28,61 +25,6 @@ def set_language():
     session['lang'] = 'ar'  # Always use Arabic
 
 # Authentication routes
-@app.route('/login/google')
-def google_login():
-    flow = Flow.from_client_config(
-        {
-            "web": {
-                "client_id": app.config['GOOGLE_CLIENT_ID'],
-                "client_secret": app.config['GOOGLE_CLIENT_SECRET'],
-                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                "token_uri": "https://oauth2.googleapis.com/token",
-            }
-        },
-        scopes=['openid', 'email', 'profile']
-    )
-    
-    flow.redirect_uri = url_for('google_callback', _external=True)
-    authorization_url, state = flow.authorization_url(access_type='offline', include_granted_scopes='true')
-    session['state'] = state
-    return redirect(authorization_url)
-
-@app.route('/login/google/callback')
-def google_callback():
-    flow = Flow.from_client_config(
-        {
-            "web": {
-                "client_id": app.config['GOOGLE_CLIENT_ID'],
-                "client_secret": app.config['GOOGLE_CLIENT_SECRET'],
-                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                "token_uri": "https://oauth2.googleapis.com/token",
-            }
-        },
-        scopes=['openid', 'email', 'profile']
-    )
-    
-    flow.redirect_uri = url_for('google_callback', _external=True)
-    flow.fetch_token(authorization_response=request.url)
-    
-    credentials = flow.credentials
-    response = requests.get('https://www.googleapis.com/oauth2/v2/userinfo',
-                          headers={'Authorization': f'Bearer {credentials.token}'})
-    user_info = response.json()
-    
-    # Check if user exists, if not create new user
-    user = User.query.filter_by(email=user_info['email']).first()
-    if not user:
-        user = User(
-            username=user_info['email'].split('@')[0],
-            email=user_info['email']
-        )
-        user.set_password(os.urandom(24).hex())  # Random password for Google users
-        db.session.add(user)
-        db.session.commit()
-    
-    login_user(user)
-    return redirect(url_for('index'))
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Redirect if user is already logged in
