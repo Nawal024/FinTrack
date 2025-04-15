@@ -717,8 +717,12 @@ footer {
     background-color: var(--primary);
     color: white;
     padding: 2rem 0;
-    margin-top: 3rem;
+    margin-top: auto;
+    position: relative;
+    bottom: 0;
+    width: 100%;
 }
+
 
 footer a {
     color: rgba(255, 255, 255, 0.8);
