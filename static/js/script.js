@@ -149,12 +149,20 @@ Chart.plugins.register({
 function setupFlashMessages() {
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(alert => {
+        // تحقق مما إذا كانت التنبيه هو تنبيه الإنفاق (مثلاً عبر إضافة فئة مخصصة)
+        if (alert.classList.contains('spending-alert')) {
+            // لا تختفي تلقائيًا (أو قم بتطبيق أي شيء آخر)
+            return;
+        }
+
+        // الاختفاء التلقائي لبقية التنبيهات
         setTimeout(() => {
             alert.style.opacity = '0';
             setTimeout(() => alert.remove(), 300);
         }, 5000);
     });
 }
+
 
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', function() {
