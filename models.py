@@ -54,7 +54,7 @@ class Expense(db.Model):
     def to_dict(self):
         """Convert model to dictionary for API responses"""
         return {
-            'id': str(self.id),
+            'id': self.id,
             'category': self.category,
             'amount': float(self.amount),
             'date': self.date.strftime('%Y-%m-%d'),
@@ -107,21 +107,17 @@ class ExpenseManager:
             else:
                 date_obj = date
             
-            # Create new expense without specifying ID (let it auto-increment)
+            # Create new expense
             new_expense = Expense(
                 category=category,
                 amount=float(amount),
                 date=date_obj,
                 description=description,
-                created_at=datetime.now(),
                 user_id=user_id
             )
             
-            # Add and flush to get the ID
+            # Add and commit
             db.session.add(new_expense)
-            db.session.flush()
-            
-            # Now commit the transaction
             db.session.commit()
             
             return new_expense.to_dict()
