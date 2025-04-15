@@ -25,7 +25,7 @@
             <div class="card-body">
                 {% if insights %}
                 {% for insight in insights %}
-                <div class="alert alert-{{ insight.type }}">
+                <div class="alert alert-{{ insight.type }} spending-alert d-flex align-items-start">
                     <p class="mb-0">{{ insight.message }}</p>
                 </div>
                 {% endfor %}
